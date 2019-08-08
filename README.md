@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgm7%2Fcsharp-cli.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgm7%2Fcsharp-cli?ref=badge_shield)
+
 # C# cli test application
 
 This is a simple C# Command Line Interface test application that is being used to test circleci pipelines
