@@ -100,6 +100,25 @@ jobs:
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa test
+  vulnerability-test:
+        <<: *defaults
+        steps:
+        - checkout 
+        - run:
+              name: update-npm
+              command: 'sudo npm install -g npm@latest'
+        - run:
+              name: install-snyk
+              command: 'sudo npm install -g snyk'     
+        - run: # run snyk help - test snyk is installed and working
+              name: snyk-help
+              command: snyk --help
+        - run: # run snyk auth - authenticate snyk use environment variables to add token
+              name: snyk auth
+              command: snyk auth $SNYK_TOKEN
+        - run: # run snyk test - run snyk test
+             name: snyk test
+             command: snyk test -d
 workflows:
   version: 2
   build_test_and_push:
