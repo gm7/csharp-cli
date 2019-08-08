@@ -99,7 +99,7 @@ jobs:
     steps:
       - checkout 
       - run: sudo npm install -g npm@latest
-      - run: sudo npm install -g snyk'
+      - run: sudo npm install -g snyk@latest
       - run: snyk --help
       - run: snyk auth $SNYK_TOKEN
       - run: snyk test --file=csharp-cli.sln
