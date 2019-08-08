@@ -79,8 +79,9 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build
     steps:
-      # Install su
+      # Install su and curl
       - run: set -ex && apk --no-cache add sudo
+      - run: apk add --update curl
       # Install Fossa
       - run: |
           sudo curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac
