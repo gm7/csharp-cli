@@ -16,19 +16,13 @@ jobs:
       - checkout
       - run: find .
       - run: |
-         sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-          -Dsonar.branch.name=$CIRCLE_BRANCH  \
-          -Dsonar.organization=$SONAR_ORG  \
-          -Dsonar.exclusions=tests/**/*,doc/**/*,scripts/**/* \
-          -Dsonar.test.inclusions=tests/**/* \
-          -Dsonar.sources=.  \
+         sonar-scanner \
           -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.scm.provider=git \
-          -Dsonar.projectName=csharp-cli \
-          -Dsonar.links.homepage=https://github.com/gm7/csharp-cli \
-          -Dsonar.sourceEncoding=UTF-8 \
-          -Dsonar.verbose=true \
-          -Dsonar.login=$SONAR_AUTH_TOKEN
+          -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+          -Dsonar.organization=$SONAR_ORG \
+          -Dsonar.login=$SONAR_AUTH_TOKEN \
+          -Dsonar.branch.name=$CIRCLE_BRANCH \
+          -Dsonar.exclusions=scripts/**/*,tests/**/*                
       - store_artifacts:
           path:  target
   test:
@@ -38,7 +32,6 @@ jobs:
     
     steps:
       - checkout
-      - run: find .
       - run: dotnet restore
       - run: dotnet build
       - run: dotnet test --no-build 
