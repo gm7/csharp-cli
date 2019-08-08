@@ -96,12 +96,8 @@ jobs:
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
       - checkout
       - run: dotnet build
-      - run:
-        command: fossa init
-        working_directory: ~/build
-      - run:
-        command: FOSSA_API_KEY=$FOSSA_API_KEY  fossa analyze
-        working_directory: ~/build      
+      - run: fossa init      
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
 workflows:
   version: 2
   build_test_and_push:
