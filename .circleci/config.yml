@@ -103,8 +103,8 @@ jobs:
       - run: apk --no-cache add --update nodejs npm
       - checkout 
       - run: dotnet restore
-      - run: sudo npm_config_unsafe_perm=true npm install npm@latest
-      - run: sudo npm_config_unsafe_perm=true npm install snyk@latest
+      - run: sudo npm_config_unsafe_perm=true npm install -g npm@latest
+      - run: sudo npm_config_unsafe_perm=true npm install -g snyk@latest
       - run: sudo snyk --help
       - run: sudo snyk auth $SNYK_TOKEN
       - run: sudo snyk test --file=csharp-cli.sln
