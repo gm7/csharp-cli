@@ -103,8 +103,8 @@ jobs:
       - run: apk --no-cache add --update nodejs npm
       - checkout 
       - run: dotnet restore
-      - run: sudo npm install -g npm@latest
-      - run: sudo npm install -g snyk@latest
+      - run: sudo npm install npm@latest
+      - run: sudo npm install snyk@latest
       - run: snyk --help
       - run: snyk auth $SNYK_TOKEN
       - run: snyk test --file=csharp-cli.sln
