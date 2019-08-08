@@ -1,3 +1,9 @@
+/**
+ * *************************************************
+ * Copyright (c) 2019, Grant D. Miller
+ * License MIT: https://opensource.org/licenses/MIT
+ * **************************************************
+ */
 ﻿using System;
 using System.IO;
 
