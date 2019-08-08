@@ -80,7 +80,7 @@ jobs:
     steps:
       # Install Fossa
       - run: |
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | sudo bash
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac
       # Install Maven
       - run: sudo apt-get update
       - run: sudo apt-get -y install maven
