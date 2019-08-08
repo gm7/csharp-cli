@@ -120,7 +120,7 @@ jobs:
             command: snyk auth $SNYK_TOKEN
       - run: # run snyk test - run snyk test
             name: snyk test
-            command: snyk test -d
+            command: snyk test --file=csharp-cli.sln
 workflows:
   version: 2
   build_test_and_push:
