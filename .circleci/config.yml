@@ -22,7 +22,7 @@ jobs:
           -Dsonar.organization=$SONAR_ORG \
           -Dsonar.login=$SONAR_AUTH_TOKEN \
           -Dsonar.branch.name=$CIRCLE_BRANCH \
-          -Dsonar.test.inclusions=tests/**/*           
+          -Dsonar.sources=.       
       - store_artifacts:
           path:  target
   test:
