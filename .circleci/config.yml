@@ -10,7 +10,7 @@ executorType: machine
 jobs:
   static-analysis:
     docker:
-      - image: newtmitch/sonar-scanner:3.2.0
+      - image: newtmitch/sonar-scanner:alpine
     working_directory: ~/build
     steps:
       - checkout
@@ -89,7 +89,7 @@ jobs:
       # Install Fossa
       - run: apk add --update curl
       - run: |
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | bash
       - checkout
       - run: dotnet build
       - run: fossa init      
