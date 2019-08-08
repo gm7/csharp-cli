@@ -127,7 +127,6 @@ workflows:
           - test
           - static-analysis
           - license-headers
-          - vulnerability-test
           filters:
             tags:
               only: /^v*.*.*/
