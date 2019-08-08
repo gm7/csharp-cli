@@ -78,7 +78,7 @@ jobs:
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           docker push grantm/csharp-cli:$TAG
           # Tag and push latest
-          docker tag grantm/csharp-cli:$TAG grindrodbank/dokuti:latest
+          docker tag grantm/csharp-cli:$TAG grantm/csharp-cli:latest
           docker push grantm/csharp-cli:latest
   fossa-scan:
     docker:
