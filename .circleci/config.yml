@@ -22,7 +22,6 @@ jobs:
           -Dsonar.organization=$SONAR_ORG \
           -Dsonar.login=$SONAR_AUTH_TOKEN \
           -Dsonar.branch.name=$CIRCLE_BRANCH \
-          -Dsonar.exclusions=scripts/**/*,tests/**/* \
           -Dsonar.test.inclusions=tests/**/*           
       - store_artifacts:
           path:  target
@@ -105,7 +104,6 @@ jobs:
       - run: dotnet restore
       - run: sudo npm_config_unsafe_perm=true npm install -g npm@latest
       - run: sudo npm_config_unsafe_perm=true npm install -g snyk@latest
-      - run: sudo snyk --help
       - run: sudo snyk auth $SNYK_TOKEN
       - run: sudo snyk monitor --file=csharp-cli.sln || true
 workflows:
