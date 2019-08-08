@@ -5,7 +5,7 @@
 # **************************************************
 #
 
-version: 2
+version: 2.1
 executorType: machine
 jobs:
   static-analysis:
@@ -22,7 +22,8 @@ jobs:
           -Dsonar.organization=$SONAR_ORG \
           -Dsonar.login=$SONAR_AUTH_TOKEN \
           -Dsonar.branch.name=$CIRCLE_BRANCH \
-          -Dsonar.exclusions=scripts/**/*,tests/**/*                
+          -Dsonar.exclusions=scripts/**/*,tests/**/* \
+          -Dsonar.test.inclusions=tests/**/*           
       - store_artifacts:
           path:  target
   test:
