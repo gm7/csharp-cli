@@ -32,8 +32,7 @@ jobs:
   test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
-    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
-    
+    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM    
     steps:
       - checkout
       - run: dotnet restore
