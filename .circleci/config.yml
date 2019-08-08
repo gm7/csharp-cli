@@ -88,20 +88,20 @@ jobs:
           echo "running docker build script" && pwd && ./scripts/docker-build-and-push.sh $REPO $IMAGE_NAME $DOCKER_TAG $DOCKER_REPO_HOST $DOCKER_USER $DOCKER_PASS
   fossa-scan:
     docker:
-      - image: golang:1.10.0-stretch
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build
     steps:
       # Install Fossa
       - run: |
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | sudo bash
-      # Install Maven
-      - run: sudo apt-get update
-      - run: sudo apt-get -y install maven
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | bash
       - checkout
-      - run: fossa init
-      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
-      # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
-      - run: fossa test
+      - run: dotnet build
+      - run:
+        command: fossa init
+        working_directory: ~/build
+      - run:
+        command: FOSSA_API_KEY=$FOSSA_API_KEY  fossa analyze
+        working_directory: ~/build      
 workflows:
   version: 2
   build_test_and_push:
