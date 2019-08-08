@@ -19,11 +19,6 @@ jobs:
             - ~/.nuget
           key: csharp-cli-build-sonar-2-{{ checksum "src/cli.csproj" }}
       - run: |
-         export TERM='xterm'
-         dotnet --version
-         java -version
-         dotnet --list-runtimes
-         export PATH="$PATH:/home/jenkins/.dotnet/tools"
          dotnet tool install --global dotnet-sonarscanner || true
          dotnet sonarscanner begin /n:${baseImageName} /key:${baseImageName} \
                 /d:sonar.host.url=https://sonarcloud.io /d:sonar.login=$SONAR_AUTH_TOKEN \
