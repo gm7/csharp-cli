@@ -14,23 +14,15 @@ jobs:
     working_directory: ~/build
     steps:
       - checkout
-      - save_cache:
-          paths:
-            - ~/.nuget
-          key: csharp-cli-build-sonar-2-{{ checksum "src/cli.csproj" }}
       - run: |
-         dotnet tool install --global dotnet-sonarscanner || true
-         dotnet sonarscanner begin /n:${baseImageName} /key:${baseImageName} \
-                /d:sonar.host.url=https://sonarcloud.io /d:sonar.login=$SONAR_AUTH_TOKEN \
-                /d:sonar.exclusions=tests/**/*,doc/**/*,scripts/**/* \
-                /d:sonar.branch.name=$CIRCLE_BRANCH \
-                /d:sonar.test.inclusions=tests/**/* \
-                /d:sonar.sourceEncoding=UTF-8 \
-                /d:sonar.cs.opencover.reportsPaths=tests/coverage.opencover.xml
-         dotnet build csharp-cli.sln
-         dotnet test csharp-cli.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover || true
-         dotnet sonarscanner end /d:sonar.login=$SONAR_AUTH_TOKEN
-         
+         sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+          -Dsonar.branch.name=$CIRCLE_BRANCH  \
+          -Dsonar.organization=$SONAR_ORG  \
+          -Dsonar.exclusions=tests/**/*,doc/**/*,scripts/**/* \
+          /d:sonar.test.inclusions=tests/**/* \
+          -Dsonar.sources=.  \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=$SONAR_AUTH_TOKEN
       - store_artifacts:
           path:  target
   test:
