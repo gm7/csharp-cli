@@ -100,17 +100,7 @@ jobs:
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa test
-  vulnerability-test:
-    docker:
-      - image: circleci/node:lts-jessie-browsers-legacy
-    working_directory: ~/build
-    steps:
-      - checkout 
-      - run: sudo npm install -g npm@latest
-      - run: sudo npm install -g snyk'
-      - run: snyk --help
-      - run: snyk auth $SNYK_TOKEN
-      - run: snyk test --file=csharp-cli.sln
+  
 workflows:
   version: 2
   build_test_and_push:
