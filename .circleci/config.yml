@@ -97,6 +97,9 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build
     steps:
+      - run: apk update
+      - run: apk upgrade
+      - run: set -ex && apk --no-cache add sudo
       - run: apk --no-cache add --update nodejs npm
       - checkout 
       - run: dotnet restore
