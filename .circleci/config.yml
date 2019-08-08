@@ -69,9 +69,17 @@ jobs:
     working_directory: ~/build
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      # build and push Docker image to dockerhub.
       - run: |
-          DOCKER_TAG=0.1
-          echo "running docker build script" && pwd && ./scripts/docker-build-and-push.sh $REPO $IMAGE_NAME $DOCKER_TAG $DOCKER_REPO_HOST $DOCKER_USER $DOCKER_PASS
+          TAG=0.0.1
+          docker build -t grantm/csharp-cli:$TAG .     
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker push grantm/csharp-cli:$TAG
+          # Tag and push latest
+          docker tag grantm/csharp-cli:$TAG grindrodbank/dokuti:latest
+          docker push grantm/csharp-cli:latest
   fossa-scan:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
