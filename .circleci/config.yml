@@ -14,7 +14,6 @@ jobs:
     working_directory: ~/build
     steps:
       - checkout
-      - run: dotnet restore
       - save_cache:
           paths:
             - ~/.nuget
@@ -62,12 +61,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - csharp-cli-build-lic-2-{{ checksum "pom.xml" }}
+            - csharp-cli-build-lic-2-{{ checksum "pom-rat.xml" }}            
       - run: mvn dependency:go-offline -f pom-rat.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - save_cache:
           paths:
             - ~/.m2
-          key: csharp-cli-build-lic-2-{{ checksum "pom.xml" }} -f pom-rat.xml
+          key: csharp-cli-build-lic-2-{{ checksum "pom-rat.xml" }} -f pom-rat.xml
       - run: mvn clean -f pom-rat.xml license:check
   docker-build:
     docker:
