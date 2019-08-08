@@ -11,7 +11,7 @@ jobs:
   static-analysis:
     docker:
       - image: newtmitch/sonar-scanner:alpine
-    working_directory: ~/build
+    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
     steps:
       - checkout
       - run: find .
@@ -22,13 +22,16 @@ jobs:
           -Dsonar.organization=$SONAR_ORG \
           -Dsonar.login=$SONAR_AUTH_TOKEN \
           -Dsonar.branch.name=$CIRCLE_BRANCH \
+          -Dsonar.projectName=csharp-cli \
+          -Dsonar.sourceEncoding=UTF-8 \
+          -Dsonar.externalIssuesReportPaths=target \
           -Dsonar.sources=.       
       - store_artifacts:
           path:  target
   test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
-    working_directory: ~/build
+    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
     
     steps:
       - checkout
@@ -39,7 +42,7 @@ jobs:
   license-headers:
     docker:
       - image: maven:3.5.3-jdk-8-alpine
-    working_directory: ~/build
+    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
     environment:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: "-Xmx3200m "
@@ -57,7 +60,7 @@ jobs:
   docker-build-push:
     docker:
       - image: docker:18.09.3
-    working_directory: ~/build
+    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
     steps:
       - checkout
       - setup_remote_docker:
@@ -74,7 +77,7 @@ jobs:
   fossa-scan:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
-    working_directory: ~/build
+    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
     steps:
       # Update, upgrade, then install su, curl and bash
       - run: apk update
@@ -94,7 +97,7 @@ jobs:
   vulnerability-test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
-    working_directory: ~/build
+    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
     steps:
       - run: apk update
       - run: apk upgrade
