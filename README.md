@@ -1,5 +1,7 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgm7%2Fcsharp-cli.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgm7%2Fcsharp-cli?ref=badge_shield)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gm7_csharp-cli&metric=alert_status)](https://sonarcloud.io/dashboard?id=gm7_csharp-cli)
+
 # C# cli test application
 
 This is a simple C# Command Line Interface test application that is being used to test circleci pipelines

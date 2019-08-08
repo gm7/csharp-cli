@@ -22,6 +22,7 @@ jobs:
           -Dsonar.test.inclusions=tests/**/* \
           -Dsonar.sources=src/**/*  \
           -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.scm.provider=git \
           -Dsonar.login=$SONAR_AUTH_TOKEN
       - store_artifacts:
           path:  target
@@ -75,12 +76,14 @@ jobs:
           echo "running docker build script" && pwd && ./scripts/docker-build-and-push.sh $REPO $IMAGE_NAME $DOCKER_TAG $DOCKER_REPO_HOST $DOCKER_USER $DOCKER_PASS
   fossa-scan:
     docker:
-      - image: golang:1.10.0-stretch
-    working_directory: ~/dokuti-build
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
+    working_directory: ~/build
     steps:
+      # Install su
+      - run: set -ex && apk --no-cache add sudo
       # Install Fossa
       - run: |
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac
+          sudo curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac
       # Install Maven
       - checkout
       - run: fossa init
