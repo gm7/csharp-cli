@@ -5,7 +5,7 @@
 # **************************************************
 #
 
-version: 2
+version: 2.1
 executorType: machine
 jobs:
   static-analysis:
@@ -22,7 +22,8 @@ jobs:
           -Dsonar.organization=$SONAR_ORG \
           -Dsonar.login=$SONAR_AUTH_TOKEN \
           -Dsonar.branch.name=$CIRCLE_BRANCH \
-          -Dsonar.exclusions=scripts/**/*,tests/**/*                
+          -Dsonar.exclusions=scripts/**/*,tests/**/* \
+          -Dsonar.test.inclusions=tests/**/*           
       - store_artifacts:
           path:  target
   test:
@@ -93,15 +94,20 @@ jobs:
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa test
   vulnerability-test:
     docker:
-      - image: circleci/node:lts-jessie-browsers-legacy
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build
     steps:
+      - run: apk update
+      - run: apk upgrade
+      - run: set -ex && apk --no-cache add sudo
+      - run: apk --no-cache add --update nodejs npm
       - checkout 
-      - run: sudo npm install -g npm@latest
-      - run: sudo npm install -g snyk'
-      - run: snyk --help
-      - run: snyk auth $SNYK_TOKEN
-      - run: snyk test --file=csharp-cli.sln
+      - run: dotnet restore
+      - run: sudo npm_config_unsafe_perm=true npm install -g npm@latest
+      - run: sudo npm_config_unsafe_perm=true npm install -g snyk@latest
+      - run: sudo snyk --help
+      - run: sudo snyk auth $SNYK_TOKEN
+      - run: sudo snyk monitor --file=csharp-cli.sln || true
 workflows:
   version: 2
   build_test_and_push:
@@ -121,7 +127,6 @@ workflows:
           - test
           - static-analysis
           - license-headers
-          - vulnerability-test
           filters:
             tags:
               only: /^v*.*.*/
