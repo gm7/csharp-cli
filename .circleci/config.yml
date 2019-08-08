@@ -54,15 +54,6 @@ jobs:
             - ~/.m2
           key: csharp-cli-build-lic-2-{{ checksum "pom-rat.xml" }} -f pom-rat.xml
       - run: mvn clean -f pom-rat.xml license:check
-  docker-build:
-    docker:
-      - image: docker:18.09.3
-    working_directory: ~/build
-    steps:
-      - checkout
-      - run: |
-          DOCKER_TAG=branch-build 
-          echo "running docker build script" && pwd && ./scripts/docker-build.sh $REPO $IMAGE_NAME $DOCKER_TAG
   docker-build-push:
     docker:
       - image: docker:18.09.3
@@ -100,33 +91,37 @@ jobs:
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa test
-  
+  vulnerability-test:
+    docker:
+      - image: circleci/node:lts-jessie-browsers-legacy
+    working_directory: ~/build
+    steps:
+      - checkout 
+      - run: sudo npm install -g npm@latest
+      - run: sudo npm install -g snyk'
+      - run: snyk --help
+      - run: snyk auth $SNYK_TOKEN
+      - run: snyk test --file=csharp-cli.sln
 workflows:
   version: 2
   build_test_and_push:
     jobs:
       - test
       - static-analysis
+      - vulnerability-test
+      - license-headers
       - fossa-scan:
           filters:
             tags:
               only: /^v*.*.*/
             branches:
-              only: master
-      - license-headers
-      - docker-build:
-          requires:
-          - test
-          - static-analysis
-          - license-headers
-          filters:
-            branches:
-              ignore: master
+              only: master      
       - docker-build-push:
           requires:
           - test
           - static-analysis
           - license-headers
+          - vulnerability-test
           filters:
             tags:
               only: /^v*.*.*/
