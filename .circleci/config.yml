@@ -19,7 +19,7 @@ jobs:
           -Dsonar.branch.name=$CIRCLE_BRANCH  \
           -Dsonar.organization=$SONAR_ORG  \
           -Dsonar.exclusions=tests/**/*,doc/**/*,scripts/**/* \
-          /d:sonar.test.inclusions=tests/**/* \
+          -Dsonar.test.inclusions=tests/**/* \
           -Dsonar.sources=.  \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=$SONAR_AUTH_TOKEN
@@ -81,7 +81,7 @@ jobs:
       # Install Fossa
       - run: apk add --update curl
       - run: |
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | bash
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac 
       - checkout
       - run: dotnet build
       - run: fossa init      
