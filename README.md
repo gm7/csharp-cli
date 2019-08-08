@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/gm7/csharp-cli.svg?style=svg)](https://circleci.com/gh/gm7/csharp-cli) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gm7_csharp-cli&metric=alert_status)](https://sonarcloud.io/dashboard?id=gm7_csharp-cli) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgm7%2Fcsharp-cli.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgm7%2Fcsharp-cli?ref=badge_shield)
+[![CircleCI](https://circleci.com/gh/gm7/csharp-cli.svg?style=svg)](https://circleci.com/gh/gm7/csharp-cli) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gm7_csharp-cli&metric=alert_status)](https://sonarcloud.io/dashboard?id=gm7_csharp-cli) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fgm7%2Fcsharp-cli.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fgm7%2Fcsharp-cli?ref=badge_shield) [![Known Vulnerabilities](https://snyk.io/test/github/gm7/csharp-cli/badge.svg)](https://snyk.io/test/github/gm7/csharp-cli)
 
 # C# cli test application
 
