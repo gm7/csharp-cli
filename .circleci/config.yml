@@ -82,8 +82,6 @@ jobs:
       - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac
       # Install Maven
-      - run: sudo apt-get update
-      - run: sudo apt-get -y install maven
       - checkout
       - run: fossa init
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
