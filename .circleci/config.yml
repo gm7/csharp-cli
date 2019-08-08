@@ -20,7 +20,7 @@ jobs:
           -Dsonar.organization=$SONAR_ORG  \
           -Dsonar.exclusions=tests/**/*,doc/**/*,scripts/**/* \
           -Dsonar.test.inclusions=tests/**/* \
-          -Dsonar.sources=.  \
+          -Dsonar.sources=src/**/*  \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=$SONAR_AUTH_TOKEN
       - store_artifacts:
@@ -84,8 +84,9 @@ jobs:
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac 
       - checkout
       - run: dotnet build
-      - run: fossa init      
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa init      
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa test
 workflows:
   version: 2
   build_test_and_push:
