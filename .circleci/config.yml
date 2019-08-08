@@ -92,7 +92,7 @@ jobs:
       - run: sudo fossa init
       - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
-      - run: sudo fossa test
+      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa test
 workflows:
   version: 2
   build_test_and_push:
