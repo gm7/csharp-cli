@@ -25,6 +25,7 @@ jobs:
           -Dsonar.projectName=csharp-cli \
           -Dsonar.sourceEncoding=UTF-8 \
           -Dsonar.externalIssuesReportPaths=target \
+          -Dsonar.verbose=true \
           -Dsonar.sources=.       
       - store_artifacts:
           path:  target
@@ -108,7 +109,7 @@ jobs:
       - run: sudo npm_config_unsafe_perm=true npm install -g npm@latest
       - run: sudo npm_config_unsafe_perm=true npm install -g snyk@latest
       - run: sudo snyk auth $SNYK_TOKEN
-      - run: sudo snyk monitor --file=csharp-cli.sln || true
+      - run: sudo snyk test --file=csharp-cli.sln || true
 workflows:
   version: 2
   build_test_and_push:
