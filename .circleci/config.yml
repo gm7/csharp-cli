@@ -10,7 +10,7 @@ jobs:
   static-analysis:
     docker:
       - image: newtmitch/sonar-scanner:alpine
-    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
+    working_directory: ~/build
     steps:
       - run: wget -O dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotnet/Runtime/2.2.6/dotnet-runtime-2.2.6-linux-musl-x64.tar.gz
       # - run: echo "c4f45ab88ffda26b30c53b1db03e50fe0eaff92d6dd5daff05f4e019fc111405d016a787cadcb3a61df4e973d297a1f63ba2535f3802eff83b2e81b3c31cf0f9 dotnet.tar.gz" | sha512sum -c - 
@@ -37,12 +37,12 @@ jobs:
   test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
-    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM    
+    working_directory: ~/build  
     steps:
       # Update, upgrade, then install  openssh for a clean checkout
       - run: apk update
       - run: apk upgrade
-      - run: apk --no-cache add --update openssh
+      - run: apk --no-cache add --update git openssh
       - checkout
       - restore_cache:
           keys:
@@ -59,7 +59,7 @@ jobs:
   license-headers:
     docker:
       - image: maven:3.5.3-jdk-8-alpine
-    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
+    working_directory: ~/build
     environment:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: "-Xmx3200m "
@@ -67,21 +67,21 @@ jobs:
        # Update, upgrade, then install openssh for a clean checkout
       - run: apk update
       - run: apk upgrade
-      - run: apk --no-cache add --update openssh
+      - run: apk --no-cache add --update openssh git
       - checkout
       - restore_cache:
           keys:
-            - csharp-cli-build-lic-2-{{ checksum "pom-rat.xml" }}            
+            - csharp-cli-build-lic-2-{{ checksum "src/obj/project.assets.json" }}            
       - run: mvn dependency:go-offline -f pom-rat.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - save_cache:
           paths:
             - ~/.m2
-          key: csharp-cli-build-lic-2-{{ checksum "pom-rat.xml" }} -f pom-rat.xml
+          key: csharp-cli-build-lic-2-{{ checksum "src/obj/project.assets.json" }} -f src/obj/project.assets.json
       - run: mvn clean -f pom-rat.xml license:check
   docker-build-push:
     docker:
       - image: docker:18.09.3
-    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
+    working_directory: ~/build
     steps:
       - checkout
       - setup_remote_docker:
@@ -98,13 +98,13 @@ jobs:
   fossa-scan:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
-    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
+    working_directory: ~/build
     steps:
       # Update, upgrade, then install su, curl, bash and openssh
       - run: apk update
       - run: apk upgrade
       - run: set -ex && apk --no-cache add sudo
-      - run: apk --no-cache add --update curl bash openssh
+      - run: apk --no-cache add --update curl bash openssh git
       # Install Fossa
       - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | sudo bash
@@ -117,12 +117,12 @@ jobs:
   vulnerability-test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
-    working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
+    working_directory: ~/build
     steps:
       - run: apk update
       - run: apk upgrade
       - run: set -ex && apk --no-cache add sudo
-      - run: apk --no-cache add --update nodejs npm openssh
+      - run: apk --no-cache add --update nodejs npm openssh git
       - checkout 
       - run: dotnet restore
       - run: sudo npm_config_unsafe_perm=true npm install -g npm@latest
