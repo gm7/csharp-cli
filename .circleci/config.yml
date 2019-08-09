@@ -35,12 +35,11 @@ jobs:
           -Dsonar.login=$SONAR_AUTH_TOKEN \
           -Dsonar.branch.name=$CIRCLE_BRANCH \
           -Dsonar.sourceEncoding=UTF-8 \
-          -Dsonar.externalIssuesReportPaths=target \
           -Dsonar.verbose=true \
           -Dsonar.projectBaseDir=${CI_PROJECT_DIR} \
-          -Dsonar.sources=.       
-      - store_artifacts:
-          path:  target
+          -Dsonar.sources=.
+      #- store_artifacts:
+      #    path:  target
   test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
