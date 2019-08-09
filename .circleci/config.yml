@@ -6,34 +6,58 @@
 #
 
 version: 2.1
-executorType: machine
 jobs:
   static-analysis:
     docker:
-      - image: newtmitch/sonar-scanner:alpine
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build
     steps:
+      # Update, upgrade, then install  openssh for a clean checkout
+      - run: apk update
+      - run: apk upgrade
+      - run: apk --no-cache add --update git openssh curl unzip sed grep bash nodejs nodejs-npm openjdk8-jre
+      - run: curl --insecure -o ./sonarscanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip && unzip sonarscanner.zip && rm sonarscanner.zip && mv sonar-scanner-4.0.0.1744-linux /usr/lib/sonar-scanner && ln -s /usr/lib/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner
+      - run: export SONAR_RUNNER_HOME=/usr/lib/sonar-scanner
+      - run: export JAVA_HOME=/usr/bin/java
+      - run: ls /usr/lib/sonar-scanner/conf
+      - run: echo $JAVA_HOME
+      #- run: cp sonar-scanner-4.0.0.1744-linux/conf/sonar-runner.properties /usr/lib/sonar-scanner/conf/sonar-scanner.properties
+      #   ensure Sonar uses the provided Java for musl instead of a borked glibc one
+      - run: sed -i 's/use_embedded_jre=true/use_embedded_jre=false/g' /usr/lib/sonar-scanner/bin/sonar-scanner
       - checkout
       - run: find .
       - run: |
          sonar-scanner \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+          -Dsonar.projectName=$SONAR_PROJECT_KEY \
           -Dsonar.organization=$SONAR_ORG \
           -Dsonar.login=$SONAR_AUTH_TOKEN \
           -Dsonar.branch.name=$CIRCLE_BRANCH \
-          -Dsonar.exclusions=scripts/**/*,tests/**/* \
-          -Dsonar.test.inclusions=tests/**/*           
-      - store_artifacts:
-          path:  target
+          -Dsonar.sourceEncoding=UTF-8 \
+          -Dsonar.verbose=true \
+          -Dsonar.projectBaseDir=${CI_PROJECT_DIR} \
+          -Dsonar.test.inclusions=tests/**/* \
+          -Dsonar.sources=.
   test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
-    working_directory: ~/build
-    
+    working_directory: ~/build  
     steps:
+      # Update, upgrade, then install  openssh for a clean checkout
+      - run: apk update
+      - run: apk upgrade
+      - run: apk --no-cache add --update git openssh
       - checkout
+      - restore_cache:
+          keys:
+            - csharp-cli-test-1-{{ checksum "src/obj/project.assets.json" }}            
       - run: dotnet restore
+      - save_cache:
+          paths:
+            - ~/.nuget
+          key: csharp-cli-test-1-{{ checksum "src/obj/project.assets.json" }} -f src/obj/project.assets.json
+      
       - run: dotnet build
       - run: dotnet test --no-build 
 
@@ -45,15 +69,19 @@ jobs:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: "-Xmx3200m "
     steps:
+       # Update, upgrade, then install openssh for a clean checkout
+      - run: apk update
+      - run: apk upgrade
+      - run: apk --no-cache add --update openssh git
       - checkout
       - restore_cache:
           keys:
-            - csharp-cli-build-lic-2-{{ checksum "pom-rat.xml" }}            
+            - csharp-cli-build-lic-2-{{ checksum "src/obj/project.assets.json" }}            
       - run: mvn dependency:go-offline -f pom-rat.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
       - save_cache:
           paths:
             - ~/.m2
-          key: csharp-cli-build-lic-2-{{ checksum "pom-rat.xml" }} -f pom-rat.xml
+          key: csharp-cli-build-lic-2-{{ checksum "src/obj/project.assets.json" }} -f src/obj/project.assets.json
       - run: mvn clean -f pom-rat.xml license:check
   docker-build-push:
     docker:
@@ -77,12 +105,11 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build
     steps:
-      # Update, upgrade, then install su, curl and bash
+      # Update, upgrade, then install su, curl, bash, openssh and git
       - run: apk update
       - run: apk upgrade
       - run: set -ex && apk --no-cache add sudo
-      - run: apk --no-cache add --update curl
-      - run: apk --no-cache add bash
+      - run: apk --no-cache add --update curl bash openssh git
       # Install Fossa
       - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | sudo bash
@@ -100,14 +127,13 @@ jobs:
       - run: apk update
       - run: apk upgrade
       - run: set -ex && apk --no-cache add sudo
-      - run: apk --no-cache add --update nodejs npm
+      - run: apk --no-cache add --update nodejs npm openssh git
       - checkout 
       - run: dotnet restore
       - run: sudo npm_config_unsafe_perm=true npm install -g npm@latest
       - run: sudo npm_config_unsafe_perm=true npm install -g snyk@latest
-      - run: sudo snyk --help
       - run: sudo snyk auth $SNYK_TOKEN
-      - run: sudo snyk monitor --file=csharp-cli.sln || true
+      - run: sudo snyk test --file=csharp-cli.sln || true
 workflows:
   version: 2
   build_test_and_push:
