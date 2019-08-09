@@ -39,7 +39,7 @@ jobs:
           -Dsonar.projectBaseDir=${CI_PROJECT_DIR} \
           -Dsonar.test.inclusions=tests/**/* \
           -Dsonar.exclusions=tests/**/*,doc/**/*,.mvn/**/* \
-          -Dsonar.sources=.
+          -Dsonar.sources=src/**/*
   test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
