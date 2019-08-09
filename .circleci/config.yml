@@ -39,8 +39,20 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM    
     steps:
+      -  # Update, upgrade, then install  openssh for a clean checkout
+      - run: apk update
+      - run: apk upgrade
+      - run: apk --no-cache add --update openssh
       - checkout
+      - restore_cache:
+          keys:
+            - csharp-cli-test-1-{{ checksum "src/obj/project.assets.json" }}            
       - run: dotnet restore
+      - save_cache:
+          paths:
+            - ~/.nuget
+          key: csharp-cli-test-1-{{ checksum "src/obj/project.assets.json" }} -f pom-rat.xml
+      
       - run: dotnet build
       - run: dotnet test --no-build 
 
@@ -52,6 +64,10 @@ jobs:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: "-Xmx3200m "
     steps:
+       # Update, upgrade, then install openssh for a clean checkout
+      - run: apk update
+      - run: apk upgrade
+      - run: apk --no-cache add --update openssh
       - checkout
       - restore_cache:
           keys:
@@ -84,11 +100,11 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
     steps:
-      # Update, upgrade, then install su, curl and bash
+      # Update, upgrade, then install su, curl, bash and openssh
       - run: apk update
       - run: apk upgrade
       - run: set -ex && apk --no-cache add sudo
-      - run: apk --no-cache add --update curl bash
+      - run: apk --no-cache add --update curl bash openssh
       # Install Fossa
       - run: |
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | sudo bash
@@ -106,7 +122,7 @@ jobs:
       - run: apk update
       - run: apk upgrade
       - run: set -ex && apk --no-cache add sudo
-      - run: apk --no-cache add --update nodejs npm
+      - run: apk --no-cache add --update nodejs npm openssh
       - checkout 
       - run: dotnet restore
       - run: sudo npm_config_unsafe_perm=true npm install -g npm@latest
