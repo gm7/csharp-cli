@@ -37,9 +37,9 @@ jobs:
           -Dsonar.sourceEncoding=UTF-8 \
           -Dsonar.verbose=true \
           -Dsonar.projectBaseDir=${CI_PROJECT_DIR} \
+          -Dsonar.test.inclusions=tests/**/* \
+          -Dsonar.exclusions=tests/**/*,doc/**/*,.mvn/**/* \
           -Dsonar.sources=.
-      #- store_artifacts:
-      #    path:  target
   test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
@@ -106,7 +106,7 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build
     steps:
-      # Update, upgrade, then install su, curl, bash and openssh
+      # Update, upgrade, then install su, curl, bash, openssh and git
       - run: apk update
       - run: apk upgrade
       - run: set -ex && apk --no-cache add sudo
