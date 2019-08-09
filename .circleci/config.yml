@@ -15,10 +15,11 @@ jobs:
       # Update, upgrade, then install  openssh for a clean checkout
       - run: apk update
       - run: apk upgrade
-      - run: apk --no-cache add --update git openssh curl unzip sed grep bash nodejs nodejs-npm
+      - run: apk --no-cache add --update git openssh curl unzip sed grep bash nodejs nodejs-npm openjdk8-jre
       - run: curl --insecure -o ./sonarscanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.0.0.1744-linux.zip && unzip sonarscanner.zip && rm sonarscanner.zip && mv sonar-scanner-4.0.0.1744-linux /usr/lib/sonar-scanner && ln -s /usr/lib/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner
       - run: export SONAR_RUNNER_HOME=/usr/lib/sonar-scanner
-      - run: ls /usr/lib/sonar-scanner/
+      - run: export JAVA_HOME=/usr/bin/java
+      - run: ls /usr/lib/sonar-scanner/conf
       - run: echo $JAVA_HOME
       #- run: cp sonar-scanner-4.0.0.1744-linux/conf/sonar-runner.properties /usr/lib/sonar-scanner/conf/sonar-scanner.properties
       #   ensure Sonar uses the provided Java for musl instead of a borked glibc one
