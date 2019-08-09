@@ -6,7 +6,6 @@
 #
 
 version: 2.1
-executorType: machine
 jobs:
   static-analysis:
     docker:
@@ -40,7 +39,7 @@ jobs:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
     working_directory: ~/build-$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM    
     steps:
-      -  # Update, upgrade, then install  openssh for a clean checkout
+      # Update, upgrade, then install  openssh for a clean checkout
       - run: apk update
       - run: apk upgrade
       - run: apk --no-cache add --update openssh
