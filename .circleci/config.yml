@@ -44,14 +44,14 @@ jobs:
       - run: apk upgrade
       - run: apk --no-cache add --update openssh
       - checkout
-      - restore_cache:
-          keys:
-            - csharp-cli-test-1-{{ checksum "src/obj/project.assets.json" }}            
+      #- restore_cache:
+      #    keys:
+      #      - csharp-cli-test-1-{{ checksum "src/obj/project.assets.json" }}            
       - run: dotnet restore
-      - save_cache:
-          paths:
-            - ~/.nuget
-          key: csharp-cli-test-1-{{ checksum "src/obj/project.assets.json" }} -f src/obj/project.assets.json
+      #- save_cache:
+      #    paths:
+      #      - ~/.nuget
+      #    key: csharp-cli-test-1-{{ checksum "src/obj/project.assets.json" }} -f src/obj/project.assets.json
       
       - run: dotnet build
       - run: dotnet test --no-build 
