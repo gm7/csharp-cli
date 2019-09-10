@@ -112,14 +112,15 @@ jobs:
       - run: apk --no-cache add --update curl bash openssh git
       # Install Fossa
       - run: |
-          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | sudo bash
+          curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | bash
       # code checkout
       - checkout
       #- run: pwd
       #- run: find .
       - run: find /usr/local/bin/
       - run: ls -lah /usr/local/bin/
-      # - run: sudo alias fossa:"/usr/local/bin/fossa"
+      - run: whoami
+      # - run: chmod 777 /usr/local/bin/fossa
       - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY /usr/local/bin/fossa init
       - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
