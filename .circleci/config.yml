@@ -115,9 +115,10 @@ jobs:
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | sudo bash
       # Install Maven
       - checkout
-      - run: pwd
-      - run: find .
+      #- run: pwd
+      #- run: find .
       - run: find /usr/local/bin/
+      - run: alias fossa:"/usr/local/bin/fossa"
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa init
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
