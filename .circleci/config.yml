@@ -118,11 +118,11 @@ jobs:
       #- run: pwd
       #- run: find .
       - run: find /usr/local/bin/
-      - run: sudo alias fossa:"/usr/local/bin/fossa"
-      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa init
-      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
+      # - run: sudo alias fossa:"/usr/local/bin/fossa"
+      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa init
+      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
-      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa test
+      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa test
   vulnerability-test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
