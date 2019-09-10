@@ -115,10 +115,11 @@ jobs:
           curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install.sh | tac | tac | sudo bash
       # Install Maven
       - checkout
-      - run: FOSSA_API_KEY=$FOSSA_API_KEY /usr/local/bin/fossa init
-      - run: FOSSA_API_KEY=$FOSSA_API_KEY /usr/local/bin/fossa analyze
+      - run: ll /usr/local/bin/
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa init
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
-      - run: FOSSA_API_KEY=$FOSSA_API_KEY /usr/local/bin/fossa test
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa test
   vulnerability-test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
