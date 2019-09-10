@@ -120,7 +120,7 @@ jobs:
       - run: find /usr/local/bin/
       - run: ls -lah /usr/local/bin/
       # - run: sudo alias fossa:"/usr/local/bin/fossa"
-      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa init
+      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY /usr/local/bin/fossa init
       - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
       - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa test
