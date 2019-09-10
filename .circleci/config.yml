@@ -121,10 +121,10 @@ jobs:
       - run: ls -lah /usr/local/bin/
       - run: whoami
       # - run: chmod 777 /usr/local/bin/fossa
-      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY /usr/local/bin/fossa init
-      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY /usr/local/bin/fossa init
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
-      - run: sudo FOSSA_API_KEY=$FOSSA_API_KEY fossa test
+      - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa test
   vulnerability-test:
     docker:
       - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
