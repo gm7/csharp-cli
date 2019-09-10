@@ -117,10 +117,10 @@ jobs:
       - checkout
       #- run: pwd
       #- run: find .
-      - run: find /usr/local/bin/
+      # - run: find /usr/local/bin/
       - run: ls -lah /usr/local/bin/
       - run: whoami
-      # - run: chmod 777 /usr/local/bin/fossa
+      - run: chmod 777 /usr/local/bin/fossa
       - run: FOSSA_API_KEY=$FOSSA_API_KEY /usr/local/bin/fossa init
       - run: FOSSA_API_KEY=$FOSSA_API_KEY fossa analyze
       # Note: The 'fossa test' command must be run after the analyze command has been run, as it is dependent on the previous scan.
